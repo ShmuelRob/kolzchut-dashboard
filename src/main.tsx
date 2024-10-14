@@ -4,7 +4,6 @@ import './index.css'
 import {createBrowserRouter, RouterProvider} from "react-router-dom";
 import Dashboard from "./pages/dashboard/dashboard.tsx";
 
-
 const router = createBrowserRouter([
   // {
   //   path: "/login",
