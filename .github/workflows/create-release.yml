@@ -35,11 +35,10 @@ jobs:
           DOCKER_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
         run: |
           docker login -u $DOCKER_USERNAME -p $DOCKER_PASSWORD
-          RELEASE_TAG=${GITHUB_REF#/tags/}
-          docker build -t kolzchut-dashboard:$RELEASE_TAG .
-          docker push kolzchut-dashboard:$RELEASE_TAG
+          docker build -t kolzchut-dashboard:${{ steps.get_version.outputs.VERSION }} .
+          docker push kolzchut-dashboard:${{ steps.get_version.outputs.VERSION }}
           # Also push as 'latest'
-          docker tag kolzchut-dashboard:$RELEASE_TAG kolzchut-dashboard:latest
+          docker tag kolzchut-dashboard:${{ steps.get_version.outputs.VERSION }} kolzchut-dashboard:latest
           docker push kolzchut-dashboard:latest
 
 
@@ -47,7 +46,6 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
-          RELEASE_TAG=${GITHUB_REF#/tags/}
-          IMAGE_NAME="kolzchut-dashboard:$RELEASE_TAG"
+          IMAGE_NAME="kolzchut-dashboard:${{ steps.get_version.outputs.VERSION }}"
           RELEASE_NOTE="Docker image for this release: \`$IMAGE_NAME\`"
-          gh release edit $RELEASE_TAG --notes "$RELEASE_NOTE"
+          gh release edit ${{ steps.get_version.outputs.VERSION }} --notes "$RELEASE_NOTE"
