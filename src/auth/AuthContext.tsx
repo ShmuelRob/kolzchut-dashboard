@@ -13,7 +13,6 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   const [user, setUser] = useState<unknown | null>(null);
 
   useEffect(() => {
-    // Check if user is logged in (e.g., from localStorage)
     const storedUser = localStorage.getItem('user');
     if (storedUser) {
       setUser(JSON.parse(storedUser));
