@@ -1,16 +1,18 @@
-import React from 'react';
-import {Navigate, Outlet} from 'react-router-dom';
-import {useAuth} from "./useAuth.ts";
+import React from "react";
+import { Navigate, Outlet } from "react-router-dom";
+import { useAuth } from "./useAuth.ts";
 
 const ProtectedRoute: React.FC = () => {
-  const {user} = useAuth();
+	const user = useAuth().user as { given_name: string };
 
-  return user ? (
-    <div>
-      <p>hey {user.given_name}</p>
-    <Outlet />
-    </div>
-  ) : <Navigate to="/login" replace />;
+	return user ? (
+		<div>
+			<p>hey {user.given_name}</p>
+			<Outlet />
+		</div>
+	) : (
+		<Navigate to="/login" replace />
+	);
 };
 
 export default ProtectedRoute;
