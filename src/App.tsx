@@ -1,10 +1,18 @@
 import './App.css'
-import Dashboard from "./pages/dashboard/dashboard.tsx";
+import { GoogleLogin } from '@react-oauth/google';
+import {jwtDecode} from "jwt-decode";
 
 function App() {
-
   return <>
-      <Dashboard />
+    <GoogleLogin
+      onSuccess={credentialResponse => {
+        const decoded = jwtDecode(credentialResponse.credential!);
+        console.log(decoded);
+      }}
+      onError={() => {
+        console.log('Login Failed');
+      }}
+    />
     </>
 }
 
