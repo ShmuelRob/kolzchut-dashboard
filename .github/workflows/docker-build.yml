@@ -16,11 +16,11 @@ jobs:
         run: |
           docker login -u $DOCKER_USERNAME -p $DOCKER_PASSWORD
           RELEASE_TAG=${GITHUB_REF#refs/tags/}
-          docker build -t your-image-name:$RELEASE_TAG .
-          docker push your-image-name:$RELEASE_TAG
+          docker build -t kolzchut-dashboard:$RELEASE_TAG .
+          docker push kolzchut-dashboard:$RELEASE_TAG
           # Also push as 'latest'
-          docker tag your-image-name:$RELEASE_TAG kolzchut-dashboard:latest
-          docker push your-image-name:latest
+          docker tag kolzchut-dashboard:$RELEASE_TAG kolzchut-dashboard:latest
+          docker push kolzchut-dashboard:latest
           
 
       - name: Update release notes
@@ -28,6 +28,6 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
           RELEASE_TAG=${GITHUB_REF#refs/tags/}
-          IMAGE_NAME="your-image-name:$RELEASE_TAG"
+          IMAGE_NAME="kolzchut-dashboard:$RELEASE_TAG"
           RELEASE_NOTE="Docker image for this release: \`$IMAGE_NAME\`"
           gh release edit $RELEASE_TAG --notes "$RELEASE_NOTE"
