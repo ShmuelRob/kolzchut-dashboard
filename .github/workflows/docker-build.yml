@@ -1,0 +1,33 @@
+name: Docker Build
+
+on:
+  release:
+    types: [created]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - name: Build and push Docker image
+        env:
+          DOCKER_USERNAME: ${{ secrets.DOCKER_USERNAME }}
+          DOCKER_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
+        run: |
+          docker login -u $DOCKER_USERNAME -p $DOCKER_PASSWORD
+          RELEASE_TAG=${GITHUB_REF#refs/tags/}
+          docker build -t your-image-name:$RELEASE_TAG .
+          docker push your-image-name:$RELEASE_TAG
+          # Also push as 'latest'
+          docker tag your-image-name:$RELEASE_TAG kolzchut-dashboard:latest
+          docker push your-image-name:latest
+          
+
+      - name: Update release notes
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          RELEASE_TAG=${GITHUB_REF#refs/tags/}
+          IMAGE_NAME="your-image-name:$RELEASE_TAG"
+          RELEASE_NOTE="Docker image for this release: \`$IMAGE_NAME\`"
+          gh release edit $RELEASE_TAG --notes "$RELEASE_NOTE"
