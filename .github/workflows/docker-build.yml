@@ -15,7 +15,7 @@ jobs:
           DOCKER_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
         run: |
           docker login -u $DOCKER_USERNAME -p $DOCKER_PASSWORD
-          RELEASE_TAG=${GITHUB_REF#refs/tags/}
+          RELEASE_TAG=${GITHUB_REF/tags/}
           docker build -t kolzchut-dashboard:$RELEASE_TAG .
           docker push kolzchut-dashboard:$RELEASE_TAG
           # Also push as 'latest'
@@ -27,7 +27,7 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
-          RELEASE_TAG=${GITHUB_REF#refs/tags/}
+          RELEASE_TAG=${GITHUB_REF/tags/}
           IMAGE_NAME="kolzchut-dashboard:$RELEASE_TAG"
           RELEASE_NOTE="Docker image for this release: \`$IMAGE_NAME\`"
           gh release edit $RELEASE_TAG --notes "$RELEASE_NOTE"
