@@ -9,11 +9,10 @@ permissions:
   contents: write
 
 jobs:
-  create_release_and_build:
+  create_release:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
-
       - name: Get the version
         id: get_version
         run: echo "VERSION=${GITHUB_REF#refs/heads/}" >> $GITHUB_OUTPUT
@@ -24,11 +23,14 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
-          tag_name: v${{ steps.get_version.outputs.VERSION }}
-          release_name: Release ${{ steps.get_version.outputs.VERSION }}
+          tag_name: ${{ steps.get_version.outputs.VERSION }}
+          release_name: ${{ steps.get_version.outputs.VERSION }}
           draft: false
           prerelease: false
-
+  build_image:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v2
 
@@ -46,7 +48,10 @@ jobs:
           tags: |
             ${{ secrets.DOCKER_USERNAME }}/kolzchut-dashboard:${{ steps.get_version.outputs.VERSION }}
             ${{ secrets.DOCKER_USERNAME }}/kolzchut-dashboard:latest
-
+  update_notes:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
       - name: Update release notes
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
