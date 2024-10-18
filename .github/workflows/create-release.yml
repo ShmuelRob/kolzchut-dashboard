@@ -53,4 +53,4 @@ jobs:
         run: |
           IMAGE_NAME="${{ secrets.DOCKER_USERNAME }}/kolzchut-dashboard:${{ steps.get_version.outputs.VERSION }}"
           RELEASE_NOTE="Docker image for this release: \`$IMAGE_NAME\`"
-          gh release edit v${{ steps.get_version.outputs.VERSION }} --notes "$RELEASE_NOTE"
+          gh release edit ${{ steps.get_version.outputs.VERSION }} --notes "$RELEASE_NOTE"
